@@ -1,0 +1,20 @@
+image: atlassian/default-image:3
+
+pipelines:
+  default:
+    - step:
+        name: 'Build and Test'
+        script:
+          - '. build.sh'
+          - 'ls -l'
+          - '[ -f ${BITBUCKET_REPO_SLUG}.zip ]'
+        artifacts:
+          - '*.zip'
+    - step:
+        name: "Upload"
+        script:
+          - pipe: atlassian/bitbucket-upload-file:0.7.3
+            variables:
+              BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+              FILENAME: '*.zip'
